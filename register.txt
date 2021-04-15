@@ -1,0 +1,171 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder,Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { PatientService } from 'app/patient.service';
+
+@Component({
+  selector: 'app-registerpatient',
+  templateUrl: './registerpatient.component.html',
+  styleUrls: ['./registerpatient.component.css']
+})
+export class RegisterpatientComponent implements OnInit {
+// myScriptElement:HTMLScriptElement;
+patientForm: any;
+loginForm:any;
+adminForm:any;
+patients:any;
+closeResult:any;
+status:any;
+showSpinner=false;
+  constructor( private fp: FormBuilder, private ps: PatientService,private router:Router) {
+    this.patientForm = this.fp.group({
+  
+      patientId: [''],
+      patientFirstname:['',Validators.required],
+      patientLastName: ['',Validators.required],
+      age: ['',Validators.required],
+      gender: ['',Validators.required],
+      patientphoneNumber: ['',Validators.required],
+      patientEmail: ['',Validators.required,Validators.email],
+       password: ['',Validators.required],
+     
+         });
+    this.loginForm=this.fp.group({
+      patientEmail:[''],
+      password:[''],
+      rememberMe:[true],
+      showPassword:[false],
+    });
+    this.adminForm=this.fp.group({
+      adminEmail:[''],
+      adminPassword:[''],
+    });
+  }
+  get form()
+  {
+    return this.patientForm.controls;
+  }
+  
+
+  ngOnInit(): void {
+ $(document).ready(function(){
+    $('.login-info-box').fadeOut();
+    $('.login-show').addClass('show-log-panel');
+});
+
+
+$('.login-reg-panel input[type="radio"]').on('change', function() {
+    if($('#log-login-show').is(':checked')) {
+        $('.register-info-box').fadeOut(); 
+        $('.login-info-box').fadeIn();
+        
+        $('.white-panel').addClass('right-log');
+        $('.register-show').addClass('show-log-panel');
+        $('.login-show').removeClass('show-log-panel');
+        
+    }
+    else if($('#log-reg-show').is(':checked')) {
+        $('.register-info-box').fadeIn();
+        $('.login-info-box').fadeOut();
+        
+        $('.white-panel').removeClass('right-log');
+        
+        $('.login-show').addClass('show-log-panel');
+        $('.register-show').removeClass('show-log-panel');
+    }
+});
+var rememberMe=this.loginForm.controls.rememberMe.value;
+if(rememberMe)
+{
+  var patientEmail = localStorage.getItem("patientEmail");
+  if(patientEmail!=null)
+  {
+    this.loginForm.controls.patientEmail.value=patientEmail;
+  }
+  var password = localStorage.getItem("password");
+  if(password!=null)
+  {
+    this.loginForm.controls.password.value=password;
+  }
+}
+   
+  
+
+  }
+  loadData()
+  {
+    this.showSpinner= true;
+    setTimeout(() => {
+      this.showSpinner = false;
+    }, 3000);
+  }
+  fnAdd() {
+    this.loadData();
+    const uploadData = new FormData();
+    //  uploadData.append('patientId',this.patientForm.controls.patientId.value);
+    uploadData.append('patientFirstname',this.patientForm.controls.patientFirstname.value);
+    uploadData.append('patientLastName',this.patientForm.controls.patientLastName.value);
+    uploadData.append('age',this.patientForm.controls.age.value);
+    uploadData.append('gender',this.patientForm.controls.gender.value);
+    uploadData.append('patientphoneNumber',this.patientForm.controls.patientphoneNumber.value);
+    uploadData.append('patientEmail',this.patientForm.controls.patientEmail.value);
+    uploadData.append('password',this.patientForm.controls.password.value);  
+    this.ps.addPatient(uploadData).subscribe(data=> {
+      console.log(data);
+      
+      
+    });
+
+  }
+  fnlogin(){
+    var mail=this.loginForm.controls.patientEmail.value;
+    var password=this.loginForm.controls.password.value;
+    var rememberMe= this.loginForm.controls.rememberMe.value;
+    if(rememberMe)
+    {
+      localStorage.setItem("patientEmail",mail);
+      localStorage.setItem("password",password);
+      
+    }
+    else{
+      localStorage.removeItem("patientEmail");
+      localStorage.removeItem("password");
+    }
+    const uploadData = new FormData();   
+    uploadData.append('patientEmail',this.loginForm.controls.patientEmail.value);
+    uploadData.append('password',this.loginForm.controls.password.value);  
+    this.ps.validateLogin(uploadData).subscribe(data=> {
+      console.log(data);
+      console.log(uploadData);
+      if(data==null){
+      this.status="Login failed";
+      console.log("failed");
+    }
+    else
+    {
+        this.router.navigateByUrl('/dashboard');
+      // this.router.navigate([{outlets:{'col3':['home']}}]);        
+      // this.router.navigateByUrl('/(col3:home)');
+    }
+    });
+  }
+  adminLogin()
+  {
+    var aemail=this.adminForm.controls.adminEmail.value;
+    var apass=this.adminForm.controls.adminPassword.value;
+    if(aemail!="healthtechnologies@gmail.com" && apass!="laboratory")
+    {
+        console.log("login failed");
+        //  this.router.navigateByUrl('/dashboard');
+
+    }
+    else{
+      alert("sucess");
+       this.router.navigateByUrl('/dashboard');
+
+    }
+  }
+
+
+
+}
