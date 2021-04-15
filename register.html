@@ -1,0 +1,146 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="login-reg-panel">
+    <div class="login-info-box">
+        <h2>Have an account?</h2>
+        <p>Slide over to login !!</p>
+        <h2>Are You An Admin?</h2>
+        <label id="label-register" for="log-reg-show">Login</label>
+        <input type="radio" name="active-log-panel" id="log-reg-show"  checked="checked">
+    </div>
+                        
+    <div class="register-info-box">
+        <h2>Don't have an account?</h2>
+        <p>Slide over to register !!</p>
+        <label id="label-login" for="log-login-show">Register</label>
+        <input type="radio" name="active-log-panel" id="log-login-show">
+    </div>
+                        
+    <div class="white-panel">
+        <div class="login-show">
+            <h2>LOGIN</h2>
+            <form [formGroup]="loginForm">
+            <input type="text"  class="form- control" formControlName="patientEmail" placeholder="enter email">
+            <!-- <input type="password"  class="form- control" formcontrolName="password" placeholder="Password"> -->
+            <input [type]="(loginForm.controls.showPassword.value)?'text':'password'" name="" id="" formControlName="password" class="form-control"><br>
+            <input type="checkbox" name="" id="chkShowPassword" formControlName="showPassword">
+            <label for="chkShowPassword">Show Password</label><br>
+            <input type="checkbox" name="" id="rememberMe" formControlName="rememberMe"> 
+            <label for="rememberMe">Remember me</label> 
+            <input type="button" value="Login" class="btn btn-success" (click)="fnlogin()">&nbsp;
+            </form>
+            <br/>
+            <br/>
+            <form [formGroup]="adminForm">
+            <input type="text" placeholder=" Admin Email" formControlName="adminEmail">
+            <input type="password" placeholder=" Password" formControlName="adminPassword">
+            <input type="button" value="Admin Login" (click)="adminLogin()">
+            </form>
+           
+        </div>
+        <div class="register-show">
+          <app-spinner  *ngIf="showSpinner"></app-spinner>
+            <h2>REGISTER</h2>
+            <form [formGroup]="patientForm" novalidate>
+                <div class="form-group">
+                  <!-- <label for="patientId">Patient Id</label> -->
+                  <div class="input-group">
+                    <input id="name" disabled class="form-control" type="hidden"  formControlName="patientId" id="patientId" >
+                   
+                  </div>
+        
+                </div>
+                <div class="form-group">
+                    <label for="patientFirstname">Patient First Name</label>
+                    <div  [ngClass]="(form.patientFirstname.invalid && form.patientFirstname.touched)?'has-error':'form-group'">
+                       <div class="input-group">
+                         <input id="name" class="form-control" type="text" formControlName="patientFirstname" id="patientFirstname">
+                        </div>
+                    <!-- <div *ngIf="form.patientFirstname.touched && form.patientFirstname.invalid" class="alert alert-danger" style="background-color: white;"> -->
+                        <p *ngIf="form.patientFirstname.touched && form.patientFirstname.errors.required&& form.patientFirstname.invalid" style="color: red;">
+                           First Name cannot be Blank
+                        </p> 
+                      <!-- </div>  -->
+                    </div>
+                </div>
+                  <div class="form-group">
+                    <label for="patientLastName">Patient Last Name</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="text" formControlName="patientLastName" id="patientLastName">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    
+                    <label for="age">Age</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="text" formControlName="age" id="age">
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <label for="gender">Gender</label>
+                        <select  class="form-control" formControlName="gender">
+                          <option value=choose selected> Choose..</option>
+                          <option value="Male">Male </option>
+                          <option value="Female">Female</option>
+                          <option value="Others">Others</option>
+                        </select>
+                        <!-- <input id="male" type="radio" value="male" name="gender" formControlName="gender">
+                        <label for="male">Male</label>&nbsp;
+                        <input id="female" type="radio" value="female" name="gender" formControlName="gender">
+                        <label for="female">Female</label>  -->
+                      <!-- <input id="name" class="form-control" type="text" formControlName="gender" id="gender">  -->
+                    
+                  </div>
+                 
+                  <div class="form-group">
+                    <label for="patientphoneNumber">Phone Number</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="text" formControlName="patientphoneNumber" id="patientphoneNumber">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="patientEmail">Email</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="text" formControlName="patientEmail" id="patientEmail">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">password</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="password" formControlName="password" id="password">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password"> Confirm password</label>
+                    <div class="input-group">
+                      <input id="name" class="form-control" type="password" formControlName="cpassword" id="cpassword">
+                    </div>
+                  </div>
+                  <div class="border text-center">
+                    <button data-dismiss="modal" class="btn btn-info" (click)="fnAdd()">Sign Up</button>
+                    </div>
+              </form>
+            <!-- <input type="text" placeholder="First Name">
+            <input type="text" placeholder="Last Name">
+            <input type="text" placeholder="Age">
+          
+ 
+            <input type="text" placeholder="Phone Number">
+            <input type="text" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <input type="password" placeholder="Confirm Password">
+            <input type="button" value="Register"> -->
+        </div>
+    </div>
+</div>
